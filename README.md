@@ -1,120 +1,103 @@
 # Simulador de Ecosistema
 
-Trabajo práctico de Interfaz Gráfica (1° instancia evaluativa). Es una
-simulación por turnos que corre en la terminal: hay plantas, conejos y lobos
-que interactúan entre sí, y el jugador configura el escenario inicial y puede
-intervenir cada 3 turnos.
+TP de Interfaz Gráfica, 1ra instancia evaluativa.
 
-## Cómo ejecutarlo
-
-### Desde NetBeans
-
-1. Abrir NetBeans (probado con NetBeans 17 y 21) y elegir *File > Open Project*.
-2. Seleccionar la carpeta del repositorio. Aparece como proyecto Java
-   `SimuladorEcosistema`.
-3. Si NetBeans avisa que faltan archivos de build, aceptar que los genere:
-   `nbproject/build-impl.xml` se arma solo la primera vez que se abre.
-4. Ejecutar con *Run Project* (F6). La clase principal es `ecosistema.Main`.
-
-No usa librerías externas, solo el JDK. Hace falta JDK 11 o superior.
-
-### Desde la consola
-
-```
-javac -encoding UTF-8 -d build/classes src/ecosistema/*.java
-java -cp build/classes ecosistema.Main
-```
-
-## Cómo se juega
-
-Al arrancar pide la configuración inicial (con validación de rangos):
-
-| Dato | Rango |
-|------|-------|
-| Plantas | 5 a 30 |
-| Conejos | 2 a 15 |
-| Lobos | 1 a 5 |
-| Clima | Soleado, Lluvioso, Sequía o Invierno |
-| Turnos | 10 a 50 |
-
-Después se avanza turno a turno con Enter. Cada 3 turnos aparece el menú de
-intervención para cambiar el clima, agregar una entidad o simplemente seguir.
-La partida termina cuando se cumplen los turnos o cuando se extingue alguna de
-las tres poblaciones, y ahí se imprime el reporte final.
-
-## Estructura del proyecto
-
-```
-src/ecosistema/
-  Main.java             configuración inicial, loop de turnos y menú de intervención
-  Ecosistema.java       contiene las listas de entidades y procesa cada turno
-  Clima.java            enum con los cuatro climas y sus efectos
-  Entidad.java          clase abstracta base (nombre, energía, edad, viva)
-  Planta.java           extiende Entidad, implementa Reproducible
-  PlantaVenenosa.java   extiende Planta, implementa Peligroso (punto bonus)
-  Animal.java           clase abstracta intermedia, implementa Mortal
-  Conejo.java           extiende Animal, implementa Reproducible
-  Lobo.java             extiende Animal, implementa Peligroso
-  Reproducible.java     interface con método default intentarReproduccion()
-  Mortal.java           interface con método default verificarMuerte()
-  Peligroso.java        interface con getNivelPeligro() (punto bonus)
-```
-
-## Cómo funciona cada turno
-
-1. Las plantas con energía suficiente se reproducen (el clima define la chance).
-2. Los conejos buscan una planta y la comen. Si no encuentran pierden 15 de energía.
-3. Los lobos intentan cazar un conejo. La probabilidad sube con la energía del lobo.
-4. Todas las entidades envejecen y gastan energía. Los animales gastan un poco más
-   según lo que pesan, y las plantas rebrotan lo que les da el clima.
-5. Las entidades que quedaron sin energía mueren.
-6. Se muestra el estado del ecosistema.
-
-## Decisiones que tomamos
-
-- **Las plantas no mueren al ser comidas.** `serComida()` las deja en energía
-  mínima como pide la consigna, pero si el clima les permite rebrotar antes del
-  final del turno sobreviven. Con las plantas muriendo de una, el ecosistema
-  colapsaba en 3 o 4 turnos siempre y no se llegaba a jugar nada.
-- **Tope de 30 plantas en el terreno.** Sin un límite las plantas llegaban a 250
-  y la pantalla quedaba ilegible.
-- **Los conejos no tienen cría todos los turnos.** Piden más de 60 de energía,
-  otro conejo vivo, que haya más plantas que conejos, y además hay un 40% de
-  chance. Sin eso se duplicaban turno a turno.
-- **El clima no revive animales.** La energía se lleva a 0 cuando baja de cero
-  (como pide la consigna), así que el bonus de energía del clima se aplica solo
-  si al animal todavía le queda algo. Si no, un conejo hambriento nunca moría.
-- **Techo de 150 de energía**, para que los lobos no se vuelvan invencibles.
-
-## Requisitos de POO
-
-| Requisito | Dónde está |
-|-----------|-----------|
-| Clase abstracta con métodos abstractos | `Entidad` (`actuar`, `mostrarEstado`) |
-| Capa intermedia de herencia | `Animal`, con `moverse()` y `envejecer()` compartidos |
-| Interface implementada por dos clases | `Reproducible` en `Planta` y `Conejo` |
-| Método default aprovechado | `intentarReproduccion()` y `verificarMuerte()` |
-| Polimorfismo | `ArrayList<Reproducible>` y `ArrayList<Peligroso>` en `Ecosistema`; las plantas venenosas viajan en el mismo `ArrayList<Planta>` |
-| Encapsulamiento | todos los atributos `private`, con setters que validan |
-| Sobrecarga | `agregarEntidad(tipo)` / `agregarEntidad(tipo, energia)` y `verificarMuerte()` / `verificarMuerte(eco)` |
-
-## Puntos bonus incluidos
-
-- Planta venenosa: el conejo pierde 30 de energía y no puede distinguirla antes
-  de comerla.
-- Historial de población turno a turno, con el máximo y el mínimo de cada
-  especie en el reporte final.
-- Interface `Peligroso`, con los elementos peligrosos listados por nivel.
+Es una simulación por turnos que corre en la consola. Hay plantas, conejos y
+lobos, vos configurás cómo arranca todo y cada 3 turnos podés meter mano.
 
 ## Integrantes
 
-| Integrante | Rol |
-|------------|-----|
-| | |
-| | |
-| | |
+- Octavio Fakiani: Entidad, Planta, PlantaVenenosa y las interfaces
+- Tomás Maldonado: Animal, Conejo y Lobo
+- Milagros Venzia: Ecosistema, Main y el reporte final
+
+## Cómo ejecutarlo
+
+Abrir la carpeta con NetBeans (File > Open Project). Lo hicimos con la 21 pero
+anda igual con la 17. Si al abrirlo pide generar los archivos de build, decirle
+que sí. Después Run Project (F6), la clase main es `ecosistema.Main`.
+
+No usa ninguna librería aparte del JDK. Hace falta JDK 11 o más nuevo.
+
+Si lo querés correr sin NetBeans:
+
+    javac -encoding UTF-8 -d build/classes src/ecosistema/*.java
+    java -cp build/classes ecosistema.Main
+
+## Cómo se juega
+
+Primero pide la configuración: plantas (5 a 30), conejos (2 a 15), lobos (1 a 5),
+el clima y cuántos turnos (10 a 50). Si ponés cualquier cosa te lo vuelve a pedir.
+
+Después se avanza con Enter. Cada 3 turnos aparece el menú para cambiar el clima,
+agregar una entidad o seguir de largo. La partida termina cuando se cumplen los
+turnos o cuando se extingue alguna de las tres especies, y ahí sale el reporte
+final.
+
+## Archivos
+
+    src/ecosistema/
+      Main.java             configuración, loop de turnos y menú de intervención
+      Ecosistema.java       las listas de entidades y lo que pasa en cada turno
+      Clima.java            enum con los 4 climas y sus efectos
+      Entidad.java          clase abstracta base
+      Planta.java
+      PlantaVenenosa.java   punto bonus
+      Animal.java           clase abstracta del medio
+      Conejo.java
+      Lobo.java
+      Reproducible.java     interface, con método default
+      Mortal.java           interface, con método default
+      Peligroso.java        interface, punto bonus
+
+## Qué pasa en cada turno
+
+1. Las plantas que tienen energía suficiente se reproducen.
+2. Los conejos comen una planta. Si no encuentran pierden 15 de energía.
+3. Los lobos intentan cazar un conejo. La probabilidad sube con la energía del
+   lobo, no es fija.
+4. Todos envejecen y gastan energía. Los animales gastan un poco más según lo
+   que pesan y las plantas rebrotan lo que les da el clima.
+5. El que se quedó sin energía muere.
+6. Se muestra el estado del ecosistema.
+
+## Dónde está cada cosa de POO
+
+- Clase abstracta con métodos abstractos: `Entidad` (`actuar` y `mostrarEstado`).
+- Capa intermedia de herencia: `Animal`, con `moverse()` y `envejecer()` que
+  comparten el conejo y el lobo.
+- `Reproducible` la implementan Planta y Conejo, y el Ecosistema los recorre
+  juntos en un `ArrayList<Reproducible>`.
+- `Mortal` la implementan Conejo y Lobo, con el default `verificarMuerte()`.
+- Encapsulamiento: todo private, y los setters validan (la energía no baja de 0
+  ni pasa de 150).
+- Sobrecarga: `agregarEntidad(tipo)` y `agregarEntidad(tipo, energia)`, y también
+  `verificarMuerte()` y `verificarMuerte(eco)`.
+- La planta venenosa va en el mismo `ArrayList<Planta>` que las normales, por eso
+  el conejo no la puede distinguir hasta que se la come.
+
+## Bonus que hicimos
+
+- Planta venenosa: en vez de alimentar le saca 30 de energía al conejo.
+- Historial de población turno a turno, y en el reporte final dice en qué turno
+  cada especie llegó a su máximo y a su mínimo.
+- Interface `Peligroso`, los peligrosos salen listados por nivel en el reporte.
+
+## Desafíos
+
+- Al principio la planta se moría apenas se la comían y el ecosistema colapsaba
+  siempre en 3 o 4 turnos, no se llegaba a jugar nada. Lo cambiamos para que
+  quede en energía mínima y rebrote si el clima la ayuda.
+- Los conejos no se morían nunca de hambre y no entendíamos por qué. Era que la
+  energía no puede ser negativa (se lleva a 0) y después el bonus del clima los
+  levantaba de vuelta. Lo arreglamos aplicando el clima solo si al animal
+  todavía le queda algo.
+- Las plantas llegaban a más de 250 y la consola quedaba ilegible. Le pusimos un
+  tope de 30 al terreno y que los conejos no tengan cría si no hay comida para
+  todos.
+- Los lobos juntaban energía infinita y no fallaban una caza, por eso le pusimos
+  un techo de 150 a la energía.
 
 ## Documentación
 
-Las capturas y los links de las consultas de cada integrante están en la
-carpeta `documentacion/`.
+Las capturas y los links de cada uno están en la carpeta `documentacion/`.

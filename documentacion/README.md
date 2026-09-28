@@ -1,18 +1,11 @@
 # Documentación
 
-En esta carpeta va la documentación individual de cada integrante:
+Acá va la documentación de cada uno: capturas de los prompts, links a las
+conversaciones completas o links de las páginas que consultamos.
 
-- Capturas de los prompts utilizados, o
-- Links a las conversaciones completas, o
-- Links de las páginas web consultadas.
+Una carpeta por integrante para que quede claro de quién es cada cosa:
 
-Cada archivo tiene que dejar claro de quién es. Una forma de ordenarlo es una
-subcarpeta por integrante:
-
-```
-documentacion/
-  nombre-apellido/
-    01-consulta-herencia.png
-    02-consulta-interfaces.png
-    links.md
-```
+    documentacion/
+      octavio-fakiani/
+      tomas-maldonado/
+      milagros-venzia/
