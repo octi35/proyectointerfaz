@@ -13,9 +13,9 @@ lobos, vos configurás cómo arranca todo y cada 3 turnos podés meter mano.
 
 ## Cómo ejecutarlo
 
-Abrir la carpeta con NetBeans (File > Open Project). Lo hicimos con la 21 pero
-anda igual con la 17. Si al abrirlo pide generar los archivos de build, decirle
-que sí. Después Run Project (F6), la clase main es `ecosistema.Main`.
+Abrir la carpeta con NetBeans (File > Open Project). Si al abrirlo pide generar
+los archivos de build, decirle que sí. Después Run Project (F6), la clase main
+es `ecosistema.Main`.
 
 No usa ninguna librería aparte del JDK. Hace falta JDK 11 o más nuevo.
 
@@ -88,10 +88,9 @@ final.
 - Al principio la planta se moría apenas se la comían y el ecosistema colapsaba
   siempre en 3 o 4 turnos, no se llegaba a jugar nada. Lo cambiamos para que
   quede en energía mínima y rebrote si el clima la ayuda.
-- Los conejos no se morían nunca de hambre y no entendíamos por qué. Era que la
-  energía no puede ser negativa (se lleva a 0) y después el bonus del clima los
-  levantaba de vuelta. Lo arreglamos aplicando el clima solo si al animal
-  todavía le queda algo.
+- Los conejos no se morían nunca de hambre. La energía no puede ser negativa
+  (se lleva a 0) y después el bonus del clima los levantaba de vuelta. Se
+  arregló aplicando el clima solo si al animal todavía le queda algo.
 - Las plantas llegaban a más de 250 y la consola quedaba ilegible. Le pusimos un
   tope de 30 al terreno y que los conejos no tengan cría si no hay comida para
   todos.

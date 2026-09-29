@@ -15,10 +15,11 @@ public interface Mortal {
 
     String getTipo();
 
-    /** Mata a la entidad si se quedo sin energia. */
+    /** Mata a la entidad si se quedo sin energia y muestra el evento. */
     default void verificarMuerte() {
         if (estaVivo() && getEnergia() <= 0) {
             morir();
+            System.out.println("  " + getTipo() + " '" + getNombre() + "' murió de inanición");
         }
     }
 

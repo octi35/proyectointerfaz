@@ -558,6 +558,18 @@ public class Ecosistema {
         return MAX_LOBOS_AGREGADOS - lobosAgregados;
     }
 
+    public ArrayList<Planta> getPlantas() {
+        return plantas;
+    }
+
+    public ArrayList<Conejo> getConejos() {
+        return conejos;
+    }
+
+    public ArrayList<Lobo> getLobos() {
+        return lobos;
+    }
+
     public Clima getClimaActual() {
         return climaActual;
     }
