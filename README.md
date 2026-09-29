@@ -9,7 +9,7 @@ lobos, vos configurás cómo arranca todo y cada 3 turnos podés meter mano.
 
 - Octavio Fakiani: Entidad, Planta, PlantaVenenosa y las interfaces
 - Tomás Maldonado: Animal, Conejo y Lobo
-- Milagros Venzia: Ecosistema, Main y el reporte final
+- Milagros Venezia: Ecosistema, Clima, Main y el reporte final
 
 ## Cómo ejecutarlo
 
