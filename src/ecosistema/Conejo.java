@@ -1,12 +1,13 @@
 package ecosistema;
 
 public class Conejo extends Animal implements Reproducible {
-     
+
     // valores de las reglas del conejo, asi no quedan numeros sueltos en el codigo
     private static final int PERDIDA_SIN_COMIDA = 15;
     private static final int ENERGIA_PARA_REPRODUCIRSE = 60;
     private static final int ENERGIA_CRIA = 30;
     private static final int LIMITE_PELIGRO = 20;
+
     public Conejo(String nombre, double energia) {
         super(nombre, energia, 8, 2.5);
     }
@@ -49,7 +50,7 @@ public class Conejo extends Animal implements Reproducible {
         return estaVivo() && getEnergia() > ENERGIA_PARA_REPRODUCIRSE;
     }
 
-    // le pasa 30 de energia a la cria
+    // le pasa parte de su energia a la cria
     @Override
     public void reproducirse(Ecosistema eco) {
         setEnergia(getEnergia() - ENERGIA_CRIA);
@@ -62,13 +63,12 @@ public class Conejo extends Animal implements Reproducible {
     @Override
     public void mostrarEstado() {
         String peligro = "";
-                if (estaEnPeligro())  {
+        if (estaEnPeligro()) {
             peligro = " | EN PELIGRO";
         }
         System.out.println("  Conejo '" + getNombre() + "' | energia: " + (int) getEnergia() + peligro);
     }
-    
-    
+
     // true si le queda menos de 20 de energia
     public boolean estaEnPeligro() {
         return getEnergia() < LIMITE_PELIGRO;

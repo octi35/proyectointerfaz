@@ -22,14 +22,16 @@ public class Lobo extends Animal implements Peligroso {
             return;
         }
         moverse();
-        if (Math.random() < probabilidadCaza(eco.getClimaActual())) {
+        double probabilidad = probabilidadCaza(eco.getClimaActual());
+        int porcentaje = (int) (probabilidad * 100);
+        if (Math.random() < probabilidad) {
             presa.morir();
             setEnergia(getEnergia() + 30);
             exitosCaza++;
             eco.registrarEvento("Lobo '" + getNombre() + "' cazó a Conejo '" + presa.getNombre()
-                    + "' (+30 energia) [cacerías: " + exitosCaza + "]");
+                    + "' (+30 energia) [cacerías: " + exitosCaza + ", chance: " + porcentaje + "%]");
         } else {
-            eco.registrarEvento("Lobo '" + getNombre() + "' falló la caza");
+                        eco.registrarEvento("Lobo '" + getNombre() + "' falló la caza (chance: " + porcentaje + "%)");
         }
     }
 
