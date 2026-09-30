@@ -93,11 +93,18 @@ public class Main {
             return;
         }
         if (tipo.equals("lobo") && !eco.puedeAgregarLobo()) {
-            System.out.println("Ya se agregaron los 5 lobos que se permiten en toda la simulación.");
+            System.out.println("Ya hubo 5 lobos en la simulación, que es el máximo permitido.");
             return;
         }
         if (confirmar("¿Confirma agregar un/a " + tipo + "? (s/n): ")) {
-            String nombre = eco.agregarEntidad(tipo);
+            String nombre;
+            // se usan las dos versiones de agregarEntidad (sobrecarga)
+            if (confirmar("¿Quiere elegir la energía inicial? (s/n): ")) {
+                int energia = leerEntero("Energía inicial (10 a 100): ", 10, 100);
+                nombre = eco.agregarEntidad(tipo, energia);
+            } else {
+                nombre = eco.agregarEntidad(tipo);
+            }
             System.out.println("Se agregó '" + nombre + "' al ecosistema.");
         } else {
             System.out.println("No se agregó nada.");

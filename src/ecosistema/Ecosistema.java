@@ -5,7 +5,7 @@ import java.util.Random;
 
 public class Ecosistema {
 
-    private static final int MAX_LOBOS_AGREGADOS = 5;
+    private static final int MAX_LOBOS = 5;
     private static final int MAX_PLANTAS = 40;
 
     private ArrayList<Planta> plantas;
@@ -500,8 +500,11 @@ public class Ecosistema {
         return contarPlantas() < MAX_PLANTAS;
     }
 
+        // no puede haber mas de 5 lobos en toda la simulacion (contando los iniciales
+    // y los agregados). La lista guarda tambien a los muertos, por eso sirve size()
     public boolean puedeAgregarLobo() {
-        return lobosAgregados < MAX_LOBOS_AGREGADOS;
+        return lobos.size() < MAX_LOBOS;
+    
     }
 
     public ArrayList<Planta> getPlantas() {
