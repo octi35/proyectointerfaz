@@ -22,7 +22,7 @@ public class Lobo extends Animal implements Peligroso {
             return;
         }
         moverse();
-        double probabilidad = probabilidadCaza(eco.getClimaActual());
+        double probabilidad = probabilidadCaza(eco.getClimaActual(), presa);
         int porcentaje = (int) (probabilidad * 100);
         if (Math.random() < probabilidad) {
             presa.morir();
@@ -31,13 +31,15 @@ public class Lobo extends Animal implements Peligroso {
             eco.registrarEvento("Lobo '" + getNombre() + "' cazó a Conejo '" + presa.getNombre()
                     + "' (+30 energia) [cacerías: " + exitosCaza + ", chance: " + porcentaje + "%]");
         } else {
-                        eco.registrarEvento("Lobo '" + getNombre() + "' falló la caza (chance: " + porcentaje + "%)");
+            eco.registrarEvento("Lobo '" + getNombre() + "' falló la caza, '" + presa.getNombre() + "' escapó (chance: " + porcentaje + "%)");
         }
     }
 
     // cuanta mas energia tiene el lobo, mas chances de cazar (en invierno tiene +20%)
-    public double probabilidadCaza(Clima clima) {
+    public double probabilidadCaza(Clima clima, Conejo presa) {
         double probabilidad = 0.1 + getEnergia() / 300 + clima.getBonusCaza();
+        // si el lobo es mas rapido que la presa tiene mas chance (2% por cada metro de diferencia)
+        probabilidad = probabilidad + (getVelocidad() - presa.getVelocidad()) * 0.02;
         if (probabilidad > 0.9) {
             probabilidad = 0.9;
         }

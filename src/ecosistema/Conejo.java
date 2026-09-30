@@ -9,7 +9,7 @@ public class Conejo extends Animal implements Reproducible {
     private static final int LIMITE_PELIGRO = 20;
 
     public Conejo(String nombre, double energia) {
-        super(nombre, energia, 8, 2.5);
+        super(nombre, energia, 6 + (int) (Math.random() * 5), 2.5);
     }
 
     // primero come y despues intenta tener una cria
