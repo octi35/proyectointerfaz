@@ -93,7 +93,7 @@ public class Main {
             return;
         }
         if (tipo.equals("lobo") && !eco.puedeAgregarLobo()) {
-            System.out.println("Ya se agregaron los 5 lobos que se permiten en toda la simulación.");
+            System.out.println("Ya hubo 5 lobos en la simulación, que es el máximo permitido.");
             return;
         }
         if (confirmar("¿Confirma agregar un/a " + tipo + "? (s/n): ")) {
