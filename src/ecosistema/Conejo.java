@@ -1,7 +1,12 @@
 package ecosistema;
 
 public class Conejo extends Animal implements Reproducible {
-
+     
+    // valores de las reglas del conejo, asi no quedan numeros sueltos en el codigo
+    private static final int PERDIDA_SIN_COMIDA = 15;
+    private static final int ENERGIA_PARA_REPRODUCIRSE = 60;
+    private static final int ENERGIA_CRIA = 30;
+    private static final int LIMITE_PELIGRO = 20;
     public Conejo(String nombre, double energia) {
         super(nombre, energia, 8, 2.5);
     }
@@ -22,9 +27,9 @@ public class Conejo extends Animal implements Reproducible {
         Planta planta = eco.buscarPlanta();
         if (planta == null) {
             moverse();
-            setEnergia(getEnergia() - 15);
-            eco.registrarEvento("Conejo '" + getNombre() + "' no encontró comida (-15 energia)"
-                    + avisoPeligro());
+            setEnergia(getEnergia() - PERDIDA_SIN_COMIDA);
+            eco.registrarEvento("Conejo '" + getNombre() + "' no encontró comida (-"
+                    + PERDIDA_SIN_COMIDA + " energia)" + avisoPeligro());
             return;
         }
         // si la planta es venenosa, serComida() devuelve un numero negativo
@@ -41,14 +46,14 @@ public class Conejo extends Animal implements Reproducible {
 
     @Override
     public boolean puedeReproducirse() {
-        return estaVivo() && getEnergia() > 60;
+        return estaVivo() && getEnergia() > ENERGIA_PARA_REPRODUCIRSE;
     }
 
     // le pasa 30 de energia a la cria
     @Override
     public void reproducirse(Ecosistema eco) {
-        setEnergia(getEnergia() - 30);
-        Conejo cria = new Conejo(eco.nombreConejo(), 30);
+        setEnergia(getEnergia() - ENERGIA_CRIA);
+        Conejo cria = new Conejo(eco.nombreConejo(), ENERGIA_CRIA);
         eco.agregarConejo(cria);
         eco.registrarEvento("Conejo '" + getNombre() + "' tuvo una cría -> nuevo conejo '"
                 + cria.getNombre() + "'");
@@ -57,15 +62,21 @@ public class Conejo extends Animal implements Reproducible {
     @Override
     public void mostrarEstado() {
         String peligro = "";
-        if (getEnergia() < 20) {
+                if (estaEnPeligro())  {
             peligro = " | EN PELIGRO";
         }
         System.out.println("  Conejo '" + getNombre() + "' | energia: " + (int) getEnergia() + peligro);
     }
+    
+    
+    // true si le queda menos de 20 de energia
+    public boolean estaEnPeligro() {
+        return getEnergia() < LIMITE_PELIGRO;
+    }
 
     // texto que se agrega cuando le queda poca energia
     private String avisoPeligro() {
-        if (estaVivo() && getEnergia() < 20) {
+        if (estaVivo() && estaEnPeligro()) {
             return " [PELIGRO: energia=" + (int) getEnergia() + "]";
         }
         return "";
