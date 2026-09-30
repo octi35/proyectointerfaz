@@ -8,4 +8,4 @@ Una carpeta por integrante para que quede claro de quién es cada cosa:
     documentacion/
       octavio-fakiani/
       tomas-maldonado/
-      milagros-venzia/
+      milagros-venezia/
