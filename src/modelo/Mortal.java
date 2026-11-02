@@ -13,10 +13,12 @@ public interface Mortal {
 
     String getTipo();
 
-    default void verificarMuerte() {
+    // devuelve true si murió en este momento, asi el ecosistema registra el evento
+    default boolean verificarMuerte() {
         if (estaVivo() && getEnergia() <= 0) {
             morir();
-            System.out.println("  " + getTipo() + " '" + getNombre() + "' murió de inanición");
+            return true;
         }
+        return false;
     }
 }

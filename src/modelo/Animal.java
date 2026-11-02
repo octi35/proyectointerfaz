@@ -13,10 +13,9 @@ public abstract class Animal extends Entidad implements Mortal {
 
     public abstract void comer(Ecosistema eco);
 
-        // la velocidad dice cuantos metros avanza en un turno
-    public void moverse() {
-        System.out.println("  " + getTipo() + " '" + getNombre() + "' se desplazó "
-                + velocidad + " metros");
+    // la velocidad dice cuantos metros avanza en un turno (devuelve el texto del evento)
+    public String moverse() {
+        return getTipo() + " '" + getNombre() + "' se desplazó " + velocidad + " metros";
     }
 
     // ademas de la energia base, gasta un poco mas segun su peso

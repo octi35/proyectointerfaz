@@ -27,7 +27,7 @@ public class Conejo extends Animal implements Reproducible {
     public void comer(Ecosistema eco) {
         Planta planta = eco.buscarPlanta();
         if (planta == null) {
-            moverse();
+          eco.registrarEvento(moverse());
             setEnergia(getEnergia() - PERDIDA_SIN_COMIDA);
             eco.registrarEvento("Conejo '" + getNombre() + "' no encontró comida (-"
                     + PERDIDA_SIN_COMIDA + " energia)" + avisoPeligro());

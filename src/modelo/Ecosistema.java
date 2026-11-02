@@ -22,6 +22,8 @@ public class Ecosistema {
     private ArrayList<Integer> historialLobos;
     private ArrayList<Integer> eventosPorTurno;
     private int eventosTurno;
+    // los eventos del turno quedan guardados para que otra capa los muestre
+    private ArrayList<String> eventos;
     private int nacimientosPlantas;
     private int nacimientosConejos;
     private int lobosAgregados;
@@ -47,6 +49,7 @@ public class Ecosistema {
         this.historialConejos = new ArrayList<>();
         this.historialLobos = new ArrayList<>();
         this.eventosPorTurno = new ArrayList<>();
+        this.eventos = new ArrayList<>();
 
         for (int i = 0; i < cantPlantas; i++) {
             double energia = 25 + random.nextInt(31);
@@ -67,15 +70,11 @@ public class Ecosistema {
         guardarHistorial();
     }
 
-    public void procesarTurno() {
+    // procesa un turno completo y devuelve la lista de eventos que pasaron
+    public ArrayList<String> procesarTurno() {
         turnoActual++;
         eventosTurno = 0;
-
-        System.out.println();
-        System.out.println("=== TURNO " + turnoActual + " | Clima: " + climaActual.getNombre() + " ===");
-        System.out.println("Plantas: " + contarPlantas() + "  Conejos: " + contarConejos()
-                + "  Lobos: " + contarLobos());
-        System.out.println("-- Eventos --");
+        eventos.clear();
 
         // 1) las plantas se reproducen (uso una copia porque la lista crece mientras la recorro)
         for (Planta p : new ArrayList<>(plantas)) {
@@ -126,23 +125,20 @@ public class Ecosistema {
                 registrarEvento("Planta '" + p.getNombre() + "' se secó");
             }
         }
-        int vivosAntes = contarConejos() + contarLobos();
         for (Conejo c : conejos) {
-            c.verificarMuerte();
+            if (c.verificarMuerte()) {
+                registrarEvento("Conejo '" + c.getNombre() + "' murió de inanición");
+            }
         }
         for (Lobo l : lobos) {
-            l.verificarMuerte();
+            if (l.verificarMuerte()) {
+                registrarEvento("Lobo '" + l.getNombre() + "' murió de inanición");
+            }
         }
-        // verificarMuerte ya imprime, aca solo las cuento como eventos
-        eventosTurno += vivosAntes - contarConejos() - contarLobos();
-
-        if (eventosTurno == 0) {
-            System.out.println("  (sin novedades)");
-        }
-        // 6) estado al final del turno
-        mostrarEstado();
+        // 6) se guarda el estado del turno para el reporte
         guardarHistorial();
         eventosPorTurno.add(eventosTurno);
+        return eventos;
     }
 
     public void mostrarEstado() {
@@ -169,9 +165,14 @@ public class Ecosistema {
         }
     }
 
+    // guarda el evento en la lista en vez de imprimirlo
     public void registrarEvento(String texto) {
         eventosTurno++;
-        System.out.println("  " + texto);
+        eventos.add(texto);
+    }
+
+    public ArrayList<String> getEventos() {
+        return eventos;
     }
 
     // agrega una entidad con energia al azar, devuelve el nombre (o null si no se pudo)
@@ -500,11 +501,10 @@ public class Ecosistema {
         return contarPlantas() < MAX_PLANTAS;
     }
 
-        // no puede haber mas de 5 lobos en toda la simulacion (contando los iniciales
+    // no puede haber mas de 5 lobos en toda la simulacion (contando los iniciales
     // y los agregados). La lista guarda tambien a los muertos, por eso sirve size()
     public boolean puedeAgregarLobo() {
         return lobos.size() < MAX_LOBOS;
-    
     }
 
     public ArrayList<Planta> getPlantas() {

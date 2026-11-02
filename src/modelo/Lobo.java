@@ -21,7 +21,7 @@ public class Lobo extends Animal implements Peligroso {
             eco.registrarEvento("Lobo '" + getNombre() + "' no encontró presas");
             return;
         }
-        moverse();
+        eco.registrarEvento(moverse());
         double probabilidad = probabilidadCaza(eco.getClimaActual(), presa);
         int porcentaje = (int) (probabilidad * 100);
         if (Math.random() < probabilidad) {

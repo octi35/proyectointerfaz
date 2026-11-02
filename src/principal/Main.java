@@ -8,7 +8,7 @@ public class Main {
 
     private static final Scanner teclado = new Scanner(System.in);
 
-    public static void main(String[] args) {
+        public static void main(String[] args) {
         System.out.println("=======================================");
         System.out.println("  SIMULADOR DE ECOSISTEMA POR TURNOS");
         System.out.println("=======================================");
@@ -16,7 +16,13 @@ public class Main {
         Ecosistema eco = configurar();
 
         while (!eco.simulacionTerminada()) {
-            eco.procesarTurno();
+            System.out.println();
+            System.out.println("=== TURNO " + (eco.getTurnoActual() + 1) + " | Clima: "
+                    + eco.getClimaActual().getNombre() + " ===");
+            for (String evento : eco.procesarTurno()) {
+                System.out.println("  " + evento);
+            }
+            eco.mostrarEstado();
             if (eco.simulacionTerminada()) {
                 break;
             }
