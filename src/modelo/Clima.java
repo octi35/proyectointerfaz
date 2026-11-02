@@ -1,4 +1,4 @@
-package ecosistema;
+package modelo;
 
 public enum Clima {
 

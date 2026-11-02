@@ -1,4 +1,4 @@
-package ecosistema;
+package modelo;
 
 public class Conejo extends Animal implements Reproducible {
 

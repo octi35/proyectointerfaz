@@ -1,6 +1,8 @@
-package ecosistema;
+package principal;
 
 import java.util.Scanner;
+import modelo.Clima;
+import modelo.Ecosistema;
 
 public class Main {
 

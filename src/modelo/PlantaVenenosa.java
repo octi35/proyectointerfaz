@@ -1,4 +1,4 @@
-package ecosistema;
+package modelo;
 
 public class PlantaVenenosa extends Planta implements Peligroso {
 
