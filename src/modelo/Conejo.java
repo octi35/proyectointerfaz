@@ -60,13 +60,13 @@ public class Conejo extends Animal implements Reproducible {
                 + cria.getNombre() + "'");
     }
 
-    @Override
-    public void mostrarEstado() {
+       @Override
+    public String mostrarEstado() {
         String peligro = "";
         if (estaEnPeligro()) {
             peligro = " | EN PELIGRO";
         }
-        System.out.println("  Conejo '" + getNombre() + "' | energia: " + (int) getEnergia() + peligro);
+        return "Conejo '" + getNombre() + "' | energia: " + (int) getEnergia() + peligro;
     }
 
     // true si le queda menos de 20 de energia

@@ -141,28 +141,30 @@ public class Ecosistema {
         return eventos;
     }
 
-    public void mostrarEstado() {
-        System.out.println("Estado: Plantas: " + contarPlantas() + "  Conejos: " + contarConejos()
-                + "  Lobos: " + contarLobos() + "  | Clima: " + climaActual.getNombre());
+    public String mostrarEstado() {
+        return "Plantas: " + contarPlantas() + "  Conejos: " + contarConejos()
+                + "  Lobos: " + contarLobos() + "  | Clima: " + climaActual.getNombre();
     }
 
-    // muestra cada entidad viva usando su propio mostrarEstado()
-    public void mostrarDetalle() {
+    // arma una lista con cada entidad viva usando su propio mostrarEstado()
+    public ArrayList<String> mostrarDetalle() {
+        ArrayList<String> detalle = new ArrayList<>();
         for (Planta p : plantas) {
             if (p.isViva()) {
-                p.mostrarEstado();
+                detalle.add(p.mostrarEstado());
             }
         }
         for (Conejo c : conejos) {
             if (c.estaVivo()) {
-                c.mostrarEstado();
+                detalle.add(c.mostrarEstado());
             }
         }
         for (Lobo l : lobos) {
             if (l.estaVivo()) {
-                l.mostrarEstado();
+                detalle.add(l.mostrarEstado());
             }
         }
+        return detalle;
     }
 
     // guarda el evento en la lista en vez de imprimirlo
@@ -324,30 +326,32 @@ public class Ecosistema {
         return "se completaron los " + turnosTotales + " turnos";
     }
 
-    public void generarReporteFinal() {
-        System.out.println();
-        System.out.println("========== REPORTE FINAL ==========");
-        System.out.println("Turnos jugados: " + turnoActual + " de " + turnosTotales);
-        System.out.println("Causa de fin: " + getCausaFin());
+    // el reporte se arma como texto y lo devuelve; lo muestra otra capa
+    public String generarReporteFinal() {
+        reporte = new StringBuilder();
+        agregar();
+        agregar("========== REPORTE FINAL ==========");
+        agregar("Turnos jugados: " + turnoActual + " de " + turnosTotales);
+        agregar("Causa de fin: " + getCausaFin());
 
-        System.out.println();
-        System.out.println("-- Población final --");
-        System.out.println("Plantas: " + contarPlantas() + "  Conejos: " + contarConejos()
+        agregar();
+        agregar("-- Población final --");
+        agregar("Plantas: " + contarPlantas() + "  Conejos: " + contarConejos()
                 + "  Lobos: " + contarLobos());
-        System.out.println("Listas para reproducirse: " + cuantosPuedenReproducirse());
+        agregar("Listas para reproducirse: " + cuantosPuedenReproducirse());
 
         // las listas guardan tambien a los muertos, asi que muertos = total - vivos
-        System.out.println();
-        System.out.println("-- Nacimientos y muertes --");
-        System.out.println("Plantas: " + nacimientosPlantas + " nacimientos, "
+        agregar();
+        agregar("-- Nacimientos y muertes --");
+        agregar("Plantas: " + nacimientosPlantas + " nacimientos, "
                 + (plantas.size() - contarPlantas()) + " muertes");
-        System.out.println("Conejos: " + nacimientosConejos + " nacimientos, "
+        agregar("Conejos: " + nacimientosConejos + " nacimientos, "
                 + (conejos.size() - contarConejos()) + " muertes");
-        System.out.println("Lobos: 0 nacimientos, " + (lobos.size() - contarLobos())
+        agregar("Lobos: 0 nacimientos, " + (lobos.size() - contarLobos())
                 + " muertes (el jugador agregó " + lobosAgregados + ")");
 
-        System.out.println();
-        System.out.println("-- Turno de mayor actividad --");
+        agregar();
+        agregar("-- Turno de mayor actividad --");
         int mejorTurno = 0;
         for (int i = 1; i < eventosPorTurno.size(); i++) {
             if (eventosPorTurno.get(i) > eventosPorTurno.get(mejorTurno)) {
@@ -355,20 +359,20 @@ public class Ecosistema {
             }
         }
         if (eventosPorTurno.isEmpty()) {
-            System.out.println("No se jugó ningún turno.");
+            agregar("No se jugó ningún turno.");
         } else {
-            System.out.println("Turno " + (mejorTurno + 1) + " con " + eventosPorTurno.get(mejorTurno)
+            agregar("Turno " + (mejorTurno + 1) + " con " + eventosPorTurno.get(mejorTurno)
                     + " eventos.");
         }
 
-        System.out.println();
-        System.out.println("-- Entidad más longeva de cada tipo --");
+        agregar();
+        agregar("-- Entidad más longeva de cada tipo --");
         mostrarMasLongeva("Planta", new ArrayList<Entidad>(plantas));
         mostrarMasLongeva("Conejo", new ArrayList<Entidad>(conejos));
         mostrarMasLongeva("Lobo", new ArrayList<Entidad>(lobos));
 
-        System.out.println();
-        System.out.println("-- Lobo con más cacerías --");
+        agregar();
+        agregar("-- Lobo con más cacerías --");
         Lobo mejorLobo = null;
         for (Lobo l : lobos) {
             if (mejorLobo == null || l.getExitosCaza() > mejorLobo.getExitosCaza()) {
@@ -376,30 +380,42 @@ public class Ecosistema {
             }
         }
         if (mejorLobo == null) {
-            System.out.println("No hubo lobos.");
+            agregar("No hubo lobos.");
         } else {
-            System.out.println("'" + mejorLobo.getNombre() + "' con " + mejorLobo.getExitosCaza()
+            agregar("'" + mejorLobo.getNombre() + "' con " + mejorLobo.getExitosCaza()
                     + " cacerías.");
         }
 
-        System.out.println();
-        System.out.println("-- Máximo y mínimo de cada población --");
+        agregar();
+        agregar("-- Máximo y mínimo de cada población --");
         mostrarMaxMin("Plantas", historialPlantas);
         mostrarMaxMin("Conejos", historialConejos);
         mostrarMaxMin("Lobos", historialLobos);
 
-        System.out.println();
-        System.out.println("-- Peligrosos que quedaron (de mayor a menor) --");
+        agregar();
+        agregar("-- Peligrosos que quedaron (de mayor a menor) --");
         ArrayList<Peligroso> peligrosos = getPeligrosos();
         if (peligrosos.isEmpty()) {
-            System.out.println("No quedó ninguno.");
+            agregar("No quedó ninguno.");
         }
         for (Peligroso p : peligrosos) {
             Entidad e = (Entidad) p;
-            System.out.println("  " + e.getTipo() + " '" + e.getNombre() + "' | nivel: "
+            agregar("  " + e.getTipo() + " '" + e.getNombre() + "' | nivel: "
                     + p.getNivelPeligro());
         }
-        System.out.println("===================================");
+        agregar("===================================");
+        return reporte.toString();
+    }
+
+    // el reporte se va armando linea por linea
+    private StringBuilder reporte;
+
+    private void agregar(String linea) {
+        reporte.append(linea).append("\n");
+    }
+
+    private void agregar() {
+        reporte.append("\n");
     }
 
     private void mostrarMasLongeva(String titulo, ArrayList<Entidad> lista) {
@@ -410,13 +426,13 @@ public class Ecosistema {
             }
         }
         if (mayor == null) {
-            System.out.println(titulo + ": no hubo.");
+            agregar(titulo + ": no hubo.");
         } else {
             String estado = "murió";
             if (mayor.isViva()) {
                 estado = "sigue viva";
             }
-            System.out.println(titulo + ": '" + mayor.getNombre() + "' con " + mayor.getEdad()
+            agregar(titulo + ": '" + mayor.getNombre() + "' con " + mayor.getEdad()
                     + " turnos (" + estado + ")");
         }
     }
@@ -437,7 +453,7 @@ public class Ecosistema {
                 turnoMin = i;
             }
         }
-        System.out.println(titulo + ": máximo " + max + " (turno " + turnoMax + "), mínimo "
+        agregar(titulo + ": máximo " + max + " (turno " + turnoMax + "), mínimo "
                 + min + " (turno " + turnoMin + ")");
     }
 

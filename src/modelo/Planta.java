@@ -39,10 +39,10 @@ public class Planta extends Entidad implements Reproducible {
                 + hija.getNombre() + "' (energia: " + (int) energiaHija + ")");
     }
 
-    @Override
-    public void mostrarEstado() {
-        System.out.println("  " + getTipo() + " '" + getNombre() + "' | tamaño: " + tamanio
-                + " | energia: " + (int) getEnergia());
+        @Override
+    public String mostrarEstado() {
+        return getTipo() + " '" + getNombre() + "' | tamaño: " + tamanio
+                + " | energia: " + (int) getEnergia();
     }
 
     // queda con la energia al minimo y devuelve cuanto alimenta

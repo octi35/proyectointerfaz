@@ -22,7 +22,7 @@ public class Main {
             for (String evento : eco.procesarTurno()) {
                 System.out.println("  " + evento);
             }
-            eco.mostrarEstado();
+            System.out.println("Estado: " + eco.mostrarEstado());
             if (eco.simulacionTerminada()) {
                 break;
             }
@@ -36,10 +36,12 @@ public class Main {
             }
         }
 
-        eco.generarReporteFinal();
+        System.out.println(eco.generarReporteFinal());
 
         if (confirmar("¿Quiere ver el detalle de lo que quedó vivo? (s/n): ")) {
-            eco.mostrarDetalle();
+                        for (String linea : eco.mostrarDetalle()) {
+                System.out.println("  " + linea);
+            }
         }
         System.out.println("Fin de la simulación.");
     }

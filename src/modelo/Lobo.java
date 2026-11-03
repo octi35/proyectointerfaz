@@ -46,10 +46,10 @@ public class Lobo extends Animal implements Peligroso {
         return probabilidad;
     }
 
-    @Override
-    public void mostrarEstado() {
-        System.out.println("  Lobo '" + getNombre() + "' | energia: " + (int) getEnergia()
-                + " | cacerías: " + exitosCaza);
+        @Override
+    public String mostrarEstado() {
+        return "Lobo '" + getNombre() + "' | energia: " + (int) getEnergia()
+                + " | cacerías: " + exitosCaza;
     }
 
     // mas peligroso cuantas mas cacerias tiene y mas energia le queda

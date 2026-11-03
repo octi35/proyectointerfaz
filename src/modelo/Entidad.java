@@ -19,7 +19,7 @@ public abstract class Entidad {
 
     public abstract void actuar(Ecosistema eco);
 
-    public abstract void mostrarEstado();
+    public abstract String mostrarEstado();
 
     // suma un turno de edad y gasta la energia base
     public void envejecer() {
