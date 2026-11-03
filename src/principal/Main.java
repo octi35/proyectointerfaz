@@ -27,7 +27,7 @@ public class Main {
                 break;
             }
             // cada 3 turnos se puede intervenir
-            if (eco.getTurnoActual() % 3 == 0) {
+        if (eco.puedeIntervenir()) {
                 intervenir(eco);
             } else {
                 System.out.println();

@@ -176,6 +176,38 @@ public class Ecosistema {
     public ArrayList<String> getEventos() {
         return eventos;
     }
+    
+       
+       // para que la vista las muestre en la tabla
+       public ArrayList<Entidad> getEntidadesVivas() {
+           ArrayList<Entidad> vivas = new ArrayList<>();
+           for (Planta p : plantas) {
+               if (p.isViva()) {
+                   vivas.add(p);
+               }
+           }
+           for (Conejo c : conejos) {
+               if (c.estaVivo()) {
+                   vivas.add(c);
+               }
+           }
+           for (Lobo l : lobos) {
+               if (l.estaVivo()) {
+                   vivas.add(l);
+               }
+           }
+           return vivas;
+       }
+
+       // cada 3 turnos el jugador puede intervenir (si la simulacion sigue)
+       public boolean puedeIntervenir() {
+           return turnoActual > 0 && turnoActual % 3 == 0 && !simulacionTerminada();
+       }
+
+       // cuantos lobos mas se pueden agregar sin pasar el maximo de 5 en toda la simulacion
+       public int getLobosDisponibles() {
+           return MAX_LOBOS - lobos.size();
+       }
 
     // agrega una entidad con energia al azar, devuelve el nombre (o null si no se pudo)
     public String agregarEntidad(String tipo) {
