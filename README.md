@@ -1,54 +1,90 @@
 # Simulador de Ecosistema
 
-TP de Interfaz Gráfica, 1ra instancia evaluativa.
+TP de Interfaz Gráfica, 2da instancia evaluativa.
 
-Es una simulación por turnos que corre en la consola. Hay plantas, conejos y
-lobos, vos configurás cómo arranca todo y cada 3 turnos podés meter mano.
+Es la simulación por turnos de la primera instancia, ahora como aplicación de
+escritorio con interfaz Swing y arquitectura MVC. Hay plantas, conejos y lobos:
+configurás cómo arranca todo desde una ventana, avanzás turno por turno y cada
+3 turnos podés cambiar el clima o agregar entidades.
 
-## Integrantes
+## Integrantes y rol
 
-- Octavio Fakiani: Entidad, Planta, PlantaVenenosa y las interfaces
-- Tomás Maldonado: Animal, Conejo y Lobo
-- Milagros Venezia: Ecosistema, Clima, Main y el reporte final
+- Octavio Fakiani: paquete `vista`, paquete `controlador`, paquete `principal` (main) y diseño en Figma
+- Tomás Maldonado: (completar)
+- Milagros Venezia: (completar)
+
+## Links
+
+- Figma: PENDIENTE (ver `documentacion/figma/DISENO.md`)
+- Video explicativo: PENDIENTE
 
 ## Cómo ejecutarlo
 
 Abrir la carpeta con NetBeans (File > Open Project). Si al abrirlo pide generar
 los archivos de build, decirle que sí. Después Run Project (F6), la clase main
-es `ecosistema.Main`.
+es `principal.Main`.
 
-No usa ninguna librería aparte del JDK. Hace falta JDK 11 o más nuevo.
+Si el diseñador (pestaña Design) dice que no encuentra alguna clase, hacer
+Clean and Build una vez y volver a abrirlo.
 
-Si lo querés correr sin NetBeans:
+Versiones: JDK 11 o más nuevo. No usa ninguna librería aparte del JDK.
 
-    javac -encoding UTF-8 -d build/classes src/ecosistema/*.java
-    java -cp build/classes ecosistema.Main
+Sin NetBeans:
+
+    javac -encoding UTF-8 -d build/classes $(find src -name '*.java')
+    java -cp build/classes principal.Main
+
+## Estructura del proyecto
+
+    src/
+      principal/
+        Main.java               crea la ventana y el controlador, los conecta y muestra la ventana
+      vista/                    solo muestra y recoge datos (armada con el diseñador de NetBeans)
+        VentanaPrincipal        JFrame con la barra de navegación y un CardLayout con las 3 pantallas
+        PanelConfiguracion      pantalla 1: formulario de configuración inicial
+        PanelSimulacion         pantalla 2: contadores, tabla de entidades, eventos e intervención
+        PanelReporte            pantalla 3: reporte final
+      controlador/
+        Controlador.java        recibe las acciones, valida, coordina el modelo y le entrega datos a la vista
+        VistaSimulador.java     interfaz con lo que el controlador le pide a la vista (sin Swing)
+      modelo/                   reglas de la simulación (entidades, clima, ecosistema), sin Swing ni consola
+        Entidad, Planta, PlantaVenenosa, Animal, Conejo, Lobo, Clima, Ecosistema,
+        Reproducible, Mortal, Peligroso
+    documentacion/              prompts, conversaciones y diseño
+      figma/DISENO.md           persona, pantallas, estados y decisiones de diseño
+
+Cada pantalla de la vista son dos archivos: el `.java` y el `.form` del
+diseñador de NetBeans. Todo lo que está entre `GEN-BEGIN` y `GEN-END` lo genera
+el diseñador; el resto del código solo carga datos, habilita o deshabilita
+componentes, cambia de pantalla y muestra mensajes.
+
+## Cómo se comunican las capas
+
+Al apretar "Avanzar turno":
+
+1. La vista llama a `controlador.avanzarTurno()`.
+2. El controlador le pide al modelo que procese el turno (`procesarTurno()`).
+3. El modelo devuelve la lista de eventos del turno.
+4. El controlador arma los datos (contadores, filas de la tabla, eventos, estado
+   de la intervención) y se los entrega a la vista.
+5. Si terminó la simulación (turnos completos o colapso), habilita "Ver reporte final".
+
+La vista no importa nada del modelo y el controlador no usa nada de Swing: el
+controlador conoce a la vista solo por la interfaz `VistaSimulador`.
 
 ## Cómo se juega
 
-Primero pide la configuración: plantas (5 a 30), conejos (2 a 15), lobos (1 a 5),
-el clima y cuántos turnos (10 a 50). Si ponés cualquier cosa te lo vuelve a pedir.
+Primero se completa la configuración: plantas (5 a 30), conejos (2 a 15), lobos
+(1 a 5), el clima y cuántos turnos (10 a 50). El controlador valida los datos y,
+si algo está mal, escribe el error debajo del formulario.
 
-Después se avanza con Enter. Cada 3 turnos aparece el menú para cambiar el clima,
-agregar una entidad o seguir de largo. La partida termina cuando se cumplen los
-turnos o cuando se extingue alguna de las tres especies, y ahí sale el reporte
-final.
+Después se avanza con "Avanzar turno". Cada 3 turnos se habilita el panel de
+intervención: se puede cambiar el clima o agregar una entidad (una sola cosa por
+intervención). El máximo es de 5 lobos en toda la simulación, contando los
+iniciales. La partida termina cuando se cumplen los turnos o cuando se extingue
+alguna de las tres especies, y ahí se habilita el reporte final.
 
-## Archivos
-
-    src/ecosistema/
-      Main.java             configuración, loop de turnos y menú de intervención
-      Ecosistema.java       las listas de entidades y lo que pasa en cada turno
-      Clima.java            enum con los 4 climas y sus efectos
-      Entidad.java          clase abstracta base
-      Planta.java
-      PlantaVenenosa.java   punto bonus
-      Animal.java           clase abstracta del medio
-      Conejo.java
-      Lobo.java
-      Reproducible.java     interface, con método default
-      Mortal.java           interface, con método default
-      Peligroso.java        interface, punto bonus
+"Nueva simulación" pide confirmación si hay una en curso.
 
 ## Qué pasa en cada turno
 
@@ -59,7 +95,7 @@ final.
 4. Todos envejecen y gastan energía. Los animales gastan un poco más según lo
    que pesan, y el clima les suma o les resta energía.
 5. El que se quedó sin energía muere.
-6. Se muestra el estado del ecosistema.
+6. Se muestra el estado del ecosistema y los eventos del turno.
 
 ## Dónde está cada cosa de POO
 
@@ -78,26 +114,33 @@ final.
 
 ## Bonus que hicimos
 
-- Planta venenosa: en vez de alimentar le saca 30 de energía al conejo.
+- Planta venenosa: en vez de alimentar le saca 30 de energía al conejo. En la
+  tabla aparece como "Planta venenosa" y en los eventos se registra cuando un
+  conejo la come.
 - Historial de población turno a turno, y en el reporte final dice en qué turno
   cada especie llegó a su máximo y a su mínimo.
 - Interface `Peligroso`, los peligrosos salen listados por nivel en el reporte.
 
 ## Desafíos
 
-- Al principio la planta se moría apenas se la comían y el ecosistema colapsaba
-  en 3 o 4 turnos, no se llegaba a jugar nada. Ahora la planta queda en energía
-  mínima pero vuelve a juntar energía cada turno según el clima. En invierno no
-  junta nada, así que ahí sí se pueden extinguir.
-- Los conejos no se morían nunca de hambre. La energía no puede ser negativa
-  (se lleva a 0) y después el bonus del clima los levantaba de vuelta. Se
-  arregló aplicando el clima solo si al animal todavía le queda algo.
-- Las plantas llegaban a más de 250 y la consola quedaba ilegible. Se puso un
-  tope de 40 plantas y los conejos solo tienen cría si hay más plantas que
-  conejos.
-- Los lobos juntaban energía sin límite y no fallaban una caza, por eso la
-  energía tiene un techo de 150.
-- Las plantas venenosas no se reproducen, para que no se llene todo de veneno.
+- La consola y la ventana no pueden compartir código de entrada y salida, así
+  que el modelo ya no imprime nada: guarda los eventos del turno en una lista y
+  el controlador se los entrega a la vista.
+- La vista no puede preguntarle datos al modelo. Para que la tabla se arme sin
+  que la vista conozca las entidades, el controlador convierte cada entidad viva
+  en una fila de datos simples.
+- El controlador no puede usar `JOptionPane`. Las confirmaciones las hace la
+  vista; el controlador solo le avisa si hay una simulación en curso
+  (`hayPartidaEnCurso()`) y la vista decide si pregunta.
+- En la consola cada intervención era una sola acción. Se mantuvo igual: después
+  de cambiar el clima o agregar una entidad, el panel se bloquea hasta el turno
+  siguiente.
+
+## Uso de IA / herramientas externas
+
+La vista, el controlador y el main de esta entrega se armaron con ayuda de
+Claude (Anthropic). El detalle de los prompts y las conversaciones va en
+`documentacion/octavio-fakiani/`.
 
 ## Documentación
 
