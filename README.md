@@ -10,8 +10,8 @@ configurás cómo arranca todo desde una ventana, avanzás turno por turno y cad
 ## Integrantes y rol
 
 - Octavio Fakiani: paquete `vista`, paquete `controlador`, paquete `principal` (main) y diseño en Figma
-- Tomás Maldonado: (completar)
-- Milagros Venezia: (completar)
+- Tomás Maldonado: paquete `modelo` (separación en paquetes, modelo sin consola, eventos y reporte como datos)
+- Milagros Venezia: paquete `dao` (guardado y retoma en archivo de texto) y su conexión con el controlador
 
 ## Links
 
@@ -47,6 +47,8 @@ Sin NetBeans:
       controlador/
         Controlador.java        recibe las acciones, valida, coordina el modelo y le entrega datos a la vista
         VistaSimulador.java     interfaz con lo que el controlador le pide a la vista (sin Swing)
+      dao/
+        EcosistemaDAO.java      única clase que lee y escribe simulacion.txt (sin Swing)
       modelo/                   reglas de la simulación (entidades, clima, ecosistema), sin Swing ni consola
         Entidad, Planta, PlantaVenenosa, Animal, Conejo, Lobo, Clima, Ecosistema,
         Reproducible, Mortal, Peligroso
@@ -85,6 +87,25 @@ iniciales. La partida termina cuando se cumplen los turnos o cuando se extingue
 alguna de las tres especies, y ahí se habilita el reporte final.
 
 "Nueva simulación" pide confirmación si hay una en curso.
+## Guardado y retoma
+
+La simulación se guarda sola en `simulacion.txt`, en la carpeta del proyecto
+(ruta relativa), después de configurarla, después de cada turno y después de
+cada intervención. Al abrir la aplicación, si el archivo existe, se retoma en
+el mismo turno. "Nueva simulación" borra el archivo.
+
+Formato: una línea por dato, campos separados por `;`
+
+    SIMULACION;turnoActual;turnosTotales;CLIMA;nacPlantas;nacConejos;lobosAgregados
+    HISTORIAL;plantas;conejos;lobos
+    EVENTOS;cantidad
+    PLANTA;nombre;energia;edad;viva;tamanio      (VENENOSA igual)
+    CONEJO;nombre;energia;edad;viva;velocidad
+    LOBO;nombre;energia;edad;viva;cacerias
+
+Se guardan también las entidades muertas porque el reporte final las necesita.
+Si el archivo no existe o tiene datos inválidos, la aplicación no se rompe:
+avisa y deja empezar una simulación nueva.
 
 ## Qué pasa en cada turno
 
@@ -135,12 +156,21 @@ alguna de las tres especies, y ahí se habilita el reporte final.
 - En la consola cada intervención era una sola acción. Se mantuvo igual: después
   de cambiar el clima o agregar una entidad, el panel se bloquea hasta el turno
   siguiente.
+- Para retomar la simulación el modelo tenía que poder rearmarse desde el
+  archivo. Se agregó un segundo constructor de `Ecosistema` que arranca vacío y
+  métodos para cargar las entidades sin contarlas como nacimientos.
+- El DAO no puede mostrar mensajes: devuelve true/false o null y el controlador
+  decide qué mostrar en la vista.
 
 ## Uso de IA / herramientas externas
 
 La vista, el controlador y el main de esta entrega se armaron con ayuda de
 Claude (Anthropic). El detalle de los prompts y las conversaciones va en
 `documentacion/octavio-fakiani/`.
+
+Tomás y Milagros usaron Claude para que los guíe con el modelo y el
+DAO, y para estudiar cómo funciona MVC. Sus preguntas están en
+`documentacion/tomas-maldonado/` y `documentacion/milagros-venezia/`.
 
 ## Documentación
 
