@@ -15,7 +15,7 @@ configurás cómo arranca todo desde una ventana, avanzás turno por turno y cad
 
 ## Links
 
-- Figma: PENDIENTE (ver `documentacion/figma/DISENO.md`)
+- Figma: - Figma: https://www.figma.com/design/yvr9pMYwmPPuTdrnEuuj57 
 - Video explicativo: PENDIENTE
 
 ## Cómo ejecutarlo

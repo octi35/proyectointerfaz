@@ -1,6 +1,6 @@
 # Diseño de la interfaz (Figma)
 
-**Link al archivo de Figma:** PENDIENTE (pegar acá el link cuando esté el archivo)
+**Link al archivo de Figma:** https://www.figma.com/design/yvr9pMYwmPPuTdrnEuuj57
 
 Este documento describe las pantallas, los estados y las decisiones de diseño
 del Simulador de Ecosistema. Es la guía para armar el archivo de Figma y
