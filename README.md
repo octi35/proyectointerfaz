@@ -16,7 +16,7 @@ configurás cómo arranca todo desde una ventana, avanzás turno por turno y cad
 ## Links
 
 - Figma: - Figma: https://www.figma.com/design/yvr9pMYwmPPuTdrnEuuj57 
-- Video explicativo: PENDIENTE
+- Video explicativo: https://drive.google.com/file/d/1V_TCscuG4SCfmadPzIjKLwLXMTqt15Xu/view?usp=drive_link
 
 ## Cómo ejecutarlo
 
