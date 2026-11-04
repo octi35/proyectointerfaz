@@ -69,6 +69,23 @@ public class Ecosistema {
         }
         guardarHistorial();
     }
+    
+        // constructor para rearmar una simulacion guardada: arranca sin entidades
+    // (sobrecarga del constructor; lo usa el DAO al cargar el archivo)
+    public Ecosistema(Clima climaActual, int turnosTotales, int turnoActual) {
+        this.plantas = new ArrayList<>();
+        this.conejos = new ArrayList<>();
+        this.lobos = new ArrayList<>();
+        this.climaActual = climaActual;
+        this.turnosTotales = turnosTotales;
+        this.turnoActual = turnoActual;
+        this.random = new Random();
+        this.historialPlantas = new ArrayList<>();
+        this.historialConejos = new ArrayList<>();
+        this.historialLobos = new ArrayList<>();
+        this.eventosPorTurno = new ArrayList<>();
+        this.eventos = new ArrayList<>();
+    }
 
     // procesa un turno completo y devuelve la lista de eventos que pasaron
     public ArrayList<String> procesarTurno() {
@@ -577,5 +594,76 @@ public class Ecosistema {
 
     public int getTurnosTotales() {
         return turnosTotales;
+    }
+    
+    // ---------------------------------------------------------------
+    // Para guardar y cargar la simulacion (lo usa el DAO)
+    // ---------------------------------------------------------------
+
+    public int getNacimientosPlantas() {
+        return nacimientosPlantas;
+    }
+
+    public int getNacimientosConejos() {
+        return nacimientosConejos;
+    }
+
+    public int getLobosAgregados() {
+        return lobosAgregados;
+    }
+
+    public ArrayList<Integer> getHistorialPlantas() {
+        return historialPlantas;
+    }
+
+    public ArrayList<Integer> getHistorialConejos() {
+        return historialConejos;
+    }
+
+    public ArrayList<Integer> getHistorialLobos() {
+        return historialLobos;
+    }
+
+    public ArrayList<Integer> getEventosPorTurno() {
+        return eventosPorTurno;
+    }
+
+    public void cargarEstadisticas(int nacimientosPlantas, int nacimientosConejos,
+            int lobosAgregados) {
+        this.nacimientosPlantas = nacimientosPlantas;
+        this.nacimientosConejos = nacimientosConejos;
+        this.lobosAgregados = lobosAgregados;
+    }
+
+    // una fila del historial: cuantos habia de cada uno en un turno
+    public void cargarHistorial(int plantas, int conejos, int lobos) {
+        historialPlantas.add(plantas);
+        historialConejos.add(conejos);
+        historialLobos.add(lobos);
+    }
+
+    public void cargarEventosPorTurno(int cantidad) {
+        eventosPorTurno.add(cantidad);
+    }
+
+    // estos tres agregan una entidad guardada sin contarla como nacimiento.
+    // El contador de nombres sube igual, asi las nuevas no repiten nombre
+    public void cargarPlanta(Planta p) {
+        plantas.add(p);
+        if (p instanceof PlantaVenenosa) {
+            contadorVenenosas++;
+        } else {
+            contadorPlantas++;
+        }
+    }
+
+    public void cargarConejo(Conejo c) {
+        conejos.add(c);
+        contadorConejos++;
+    }
+
+    public void cargarLobo(Lobo l) {
+        lobos.add(l);
+        contadorLobos++;
     }
 }
