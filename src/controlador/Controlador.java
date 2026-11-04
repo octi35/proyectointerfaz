@@ -1,5 +1,7 @@
 package controlador;
 
+
+import dao.EcosistemaDAO;
 import java.util.ArrayList;
 import java.util.List;
 import modelo.Clima;
@@ -31,6 +33,8 @@ public class Controlador {
 
     private Ecosistema eco;
     private VistaSimulador vista;
+    // el unico que habla con el archivo es el DAO, y solo lo usa el controlador
+    private EcosistemaDAO dao;
     // en cada turno de intervención se puede hacer una sola cosa (igual que en la consola)
     private boolean intervencionUsada;
 
@@ -38,8 +42,33 @@ public class Controlador {
         this.vista = vista;
     }
 
-    // deja la aplicación en su estado inicial: se ve la configuración y no hay simulación
+      public void setDao(EcosistemaDAO dao) {
+        this.dao = dao;
+    }
+
+    // al abrir la aplicación: si hay una simulación guardada la retoma,
+    // si no, queda la configuración para empezar una nueva
     public void iniciar() {
+        reiniciarPantallas();
+        if (!dao.existeArchivo()) {
+            return;
+        }
+        Ecosistema guardado = dao.cargar();   // → DAO: leé el archivo
+        if (guardado == null) {               // ← el archivo tenía datos inválidos
+            vista.mostrarError("La simulación guardada tiene datos inválidos y no se pudo "
+                    + "retomar. Configurá una nueva.");
+            return;
+        }
+        eco = guardado;
+        actualizarVista();
+        vista.mostrarEventos(eco.getTurnoActual(), new ArrayList<String>());
+        vista.mostrarSimulacion();
+        vista.mostrarMensaje("Se retomó la simulación guardada en el turno "
+                + eco.getTurnoActual() + " de " + eco.getTurnosTotales() + ".");
+    }
+
+    // deja la aplicación en su estado inicial: se ve la configuración y no hay simulación
+    private void reiniciarPantallas() {
         eco = null;
         intervencionUsada = false;
         vista.mostrarSinSimulacion();
@@ -47,7 +76,6 @@ public class Controlador {
         vista.limpiarErrorConfiguracion();
         vista.mostrarConfiguracion();
     }
-
     // ---------------------------------------------------------------
     // Configuración
     // ---------------------------------------------------------------
@@ -72,6 +100,7 @@ public class Controlador {
 
         eco = new Ecosistema(plantas, conejos, lobos, clima, turnos);
         intervencionUsada = false;
+        guardarCambios();
 
         vista.limpiarErrorConfiguracion();
         vista.mostrarReporteVacio();
@@ -88,8 +117,12 @@ public class Controlador {
         return eco != null && !eco.simulacionTerminada();
     }
 
+    // la confirmación la pide la vista; acá se borra lo guardado y se vuelve a empezar
     public void nuevaSimulacion() {
-        iniciar();
+        if (!dao.borrar()) {
+            vista.mostrarError("No se pudo borrar la simulación guardada.");
+        }
+        reiniciarPantallas();
     }
 
     // ---------------------------------------------------------------
@@ -110,6 +143,7 @@ public class Controlador {
         // se copia la lista porque el modelo la reutiliza en el turno siguiente
         List<String> eventos = new ArrayList<>(eco.procesarTurno());
         intervencionUsada = false;
+        guardarCambios();
 
         actualizarVista();
         vista.mostrarEventos(eco.getTurnoActual(), eventos);
@@ -143,6 +177,7 @@ public class Controlador {
         }
         eco.cambiarClima(nuevo);
         intervencionUsada = true;
+        guardarCambios();
         actualizarVista();
         vista.mostrarMensaje("El clima ahora es " + nuevo.getNombre() + ".");
     }
@@ -187,8 +222,10 @@ public class Controlador {
             return;
         }
         intervencionUsada = true;
+        guardarCambios();
         actualizarVista();
         vista.mostrarMensaje("Se agregó '" + nombre + "' al ecosistema.");
+        
     }
 
     // ---------------------------------------------------------------
@@ -218,7 +255,15 @@ public class Controlador {
     // ---------------------------------------------------------------
     // Auxiliares
     // ---------------------------------------------------------------
-
+    // se llama después de cada cambio: guarda la simulación completa en el archivo.
+    // Si el DAO devuelve false, la vista avisa
+    private void guardarCambios() {
+        boolean salioBien = dao.guardar(eco);   // → DAO / ← true o false
+        if (!salioBien) {
+            vista.mostrarError("No se pudo guardar la simulación en el archivo simulacion.txt.");
+        }
+    }
+    
     // le manda a la vista todo lo que tiene que mostrar del estado actual
     private void actualizarVista() {
         vista.mostrarContadores(eco.getTurnoActual(), eco.getTurnosTotales(),

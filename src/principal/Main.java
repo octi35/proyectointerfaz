@@ -1,6 +1,7 @@
 package principal;
 
 import controlador.Controlador;
+import dao.EcosistemaDAO;
 import vista.VentanaPrincipal;
 
 /**
@@ -29,6 +30,7 @@ public class Main {
                 VentanaPrincipal ventana = new VentanaPrincipal();
                 Controlador controlador = new Controlador();
                 controlador.setVista(ventana);
+                controlador.setDao(new EcosistemaDAO());
                 ventana.setControlador(controlador);
                 controlador.iniciar();
                 ventana.setVisible(true);
